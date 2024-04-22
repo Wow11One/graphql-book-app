@@ -1,20 +1,25 @@
 const bookService = require('../service/book.service')
 
 const bookResolver = {
-    createBook: async ({input}) => {
-        return await bookService.create(input)
+    Query: {
+        getAllBooks: async (parent, {genreId, authorId, search}) => {
+            return await bookService.getAll({genreId, authorId, search})
+        },
+        getOneBook: async (parent, {id}) => {
+            return await bookService.getOne(id)
+        }
     },
-    getAllBooks: async ({genreId, authorId}) => {
-        return await bookService.getAll({genreId, authorId})
-    },
-    getOneBook: async ({id}) => {
-        return await bookService.getOne(id)
-    },
-    updateBook: async ({input}) => {
-        return await bookService.update(input)
-    },
-    deleteBook: async ({id}) => {
-        return await bookService.delete(id)
+    Mutation: {
+        createBook: async (parent, {input}) => {
+            console.log('hello');
+            return await bookService.create(input)
+        },
+        updateBook: async (parent, {input}) => {
+            return await bookService.update(input)
+        },
+        deleteBook: async (parent, {id}) => {
+            return await bookService.delete(id)
+        }
     }
 }
 

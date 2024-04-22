@@ -1,35 +1,58 @@
 const {Book, Author, Genre} = require("../models/models");
+const fs = require('fs');
+const uuid = require('uuid')
+const {Op} = require('sequelize');
+
+const saveImage = async (image) => {
+    const {createReadStream} = await image;
+
+    const stream = createReadStream();
+    let newFileName = uuid.v4() + ".jpg";
+    await stream.pipe(fs.createWriteStream('./public/images/' + newFileName, {
+        flags: 'w+'
+    }));
+
+    return newFileName
+}
 
 class BookService {
 
-    async create({title, publicationYear, language, publicationHouse, author, genre}) {
+    async create({title, publicationYear, language, publicationHouse, author, genre, image}) {
+        image = await saveImage(image)
         const book = await Book.create({
             title,
             publicationYear,
             language,
             publicationHouse,
             authorId: author,
-            genreId: genre
-        })
+            genreId: genre,
+            image
+        });
 
-        return await this.getOne(book.id)
+        return await this.getOne(book.id);
     }
 
-    async getAll({genreId, authorId}) {
+    async getAll({genreIds, authorId, search}) {
         let queryParams = {}
-        if (genreId) {
-            queryParams = {...queryParams, genreId}
+        if (genreIds) {
+            queryParams = {...queryParams, genreIds}
         }
         if (authorId) {
             queryParams = {...queryParams, authorId}
         }
+        if (search || search.trim().length !== 0) {
+            search = '%' + search.trim() + '%'
+            queryParams.title = {[Op.iLike]: search}
+        }
+        console.log(search)
 
-        const books = await Book.findAll({
+        const books = await Book.findAndCountAll({
             where: queryParams,
-            include: [{model: Author, as: 'author'}, {model: Genre, as: 'genre'}]
+            include: [{model: Author, as: 'author'}, {model: Genre, as: 'genre'}],
+            order: [['createdAt', 'asc']]
         })
 
-        return books
+        return {books: books.rows, count: books.count}
     }
 
     async getOne(id) {
@@ -48,6 +71,9 @@ class BookService {
         }
         if (input.genre) {
             input.genreId = input.genre
+        }
+        if (input.image) {
+            input.image = await saveImage(input.image)
         }
 
         await book.update(input)

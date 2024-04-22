@@ -1,8 +1,10 @@
 const genreService = require('../service/genre.service')
 
 const genreResolver = {
-    getAllGenres: async () => {
-        return await genreService.getAll()
+    Query: {
+        getAllGenres: async () => {
+            return await genreService.getAll()
+        }
     }
 }
 

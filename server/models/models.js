@@ -14,12 +14,19 @@ const Book = sequelize.define('book', {
     title: {type: DataTypes.STRING, allowNull: false},
     publicationYear: {type: DataTypes.INTEGER, allowNull: false},
     language: {type: DataTypes.STRING, allowNull: false},
-    publicationHouse: {type: DataTypes.STRING, allowNull: false}
+    publicationHouse: {type: DataTypes.STRING, allowNull: false},
+    image: {type: DataTypes.STRING}
 })
 
 const Genre = sequelize.define('genre', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true}
+})
+
+const User = sequelize.define('users', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    username: {type: DataTypes.STRING, allowNull: false},
+    password: {type: DataTypes.STRING, allowNull: false},
 })
 
 Author.hasMany(Book, {onDelete: 'CASCADE', as: 'books'})
@@ -32,5 +39,6 @@ Book.belongsTo(Genre)
 module.exports = {
     Author,
     Book,
-    Genre
+    Genre,
+    User
 }

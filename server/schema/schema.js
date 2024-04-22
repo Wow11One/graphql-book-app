@@ -1,6 +1,6 @@
 const {buildSchema} = require('graphql')
 
-const schema = buildSchema(`
+const schema = `#graphql
     type Author {
         id: ID
         firstName: String
@@ -16,11 +16,27 @@ const schema = buildSchema(`
         publicationHouse: String
         author: Author
         genre: Genre
+        image: String
     }
+    
+    type BookCount {
+        books: [Book]
+        count: Int
+    }
+    
     type Genre {
         id: ID
         name: String
         books: [Book]
+    }
+    
+    type User {
+        id: ID
+        username: String
+        password: String
+    }
+    type Token {
+        token: String
     }
     
     input AuthorInput {
@@ -30,24 +46,33 @@ const schema = buildSchema(`
         birthYear: Int
     }
     
+    scalar Upload
+    
     input BookInput {
         id: ID
         title: String
         publicationYear: Int
         language: String
         publicationHouse: String
+        image: Upload
         author: ID
         genre: ID
     }
     
     type Query {
-        getAllBooks(genreId:ID, authorId: ID): [Book]
+        getAllBooks(genreId: [ID], authorId: ID, search: String): BookCount
         getOneBook(id: ID): Book
       
         getAllAuthors(search: String): [Author]
         getOneAuthor(id: ID): Author
        
         getAllGenres: [Genre]
+        check: Boolean
+        login(username: String!, password: String!): Token
+    }
+    
+    type File {
+        url: String!
     }
     
     type Mutation {
@@ -58,7 +83,9 @@ const schema = buildSchema(`
         updateAuthor(input: AuthorInput): Author
         deleteAuthor(id: ID): ID
         createAuthor(input: AuthorInput): Author
+        
+        registration(username: String!, password: String!): Token
     }
-`)
+`
 
 module.exports = schema

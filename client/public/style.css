@@ -1,0 +1,14 @@
+.row > * {
+    padding: 0 !important;
+}
+
+img {
+    height: 250px;
+    width: 250px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.card-img-top, .card-body {
+    cursor: pointer;
+}

@@ -1,21 +1,25 @@
 const authorService = require('../service/author.service')
 
-const resolver = {
-    createAuthor: async ({input}) => {
-        return await authorService.create(input)
+const authorResolver = {
+    Query: {
+        getAllAuthors: async () => {
+            return await authorService.getAll()
+        },
+        getOneAuthor: async (parent, {id}) => {
+            return await authorService.getOne(id)
+        },
     },
-    getAllAuthors: async () => {
-        return await authorService.getAll()
-    },
-    getOneAuthor: async ({id}) => {
-        return await authorService.getOne(id)
-    },
-    updateAuthor: async ({input}) => {
-        return await authorService.update(input)
-    },
-    deleteAuthor: async ({id}) => {
-        return await authorService.delete(id)
+    Mutation: {
+        createAuthor: async (parent, {input}) => {
+            return await authorService.create(input)
+        },
+        updateAuthor: async (parent, {input}) => {
+            return await authorService.update(input)
+        },
+        deleteAuthor: async (parent, {id}) => {
+            return await authorService.delete(id)
+        }
     }
 }
 
-module.exports = resolver
+module.exports = authorResolver

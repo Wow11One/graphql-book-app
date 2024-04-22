@@ -1,0 +1,5 @@
+export const LOGIN_PAGE = '/login'
+export const REGISTRATION_PAGE = '/registration'
+export const BOOKS_PAGE = '/books'
+export const AUTHORS_PAGE = '/authors'
+export const SERVER_STATIC_URL = 'http://localhost:5000/images/'
