@@ -1,5 +1,12 @@
 import {gql} from '@apollo/client';
 
+export const CREATE_BOOK = gql`
+       mutation createBook($input: BookInput){
+           createBook(input: $input) {
+                id
+            }
+       }
+`
 export const GET_ALL_BOOKS = gql`
        query Books($authorId: ID, 
                    $genreIds: [ID], 
@@ -28,14 +35,21 @@ export const GET_ALL_BOOKS = gql`
        }
 `
 
-export const CREATE_BOOK = gql`
-       mutation createBook($input: BookInput){
-           createBook(input: $input) {
-                id
+export const GET_ALL_LIKED_BOOKS = gql`
+       query LikedBooks($ids: [ID]) {
+           getAllBooks(ids: $ids) {
+                books {
+                    id
+                    title
+                    author {
+                        firstName
+                        lastName
+                    }
+                    publicationYear
+                    }
             }
        }
 `
-
 export const UPDATE_BOOK = gql`
        mutation updateBook($input: BookInput){
            updateBook(input: $input) {
@@ -76,3 +90,8 @@ export const GET_ONE_BOOK = gql`query bookQuery($id: ID) {
          }
     }
 }`
+export const DELETE_BOOK = gql`
+       mutation deleteBook($id: ID){
+           deleteBook(id: $id)
+       }
+`

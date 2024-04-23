@@ -1,26 +1,47 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {observer} from 'mobx-react-lite';
 import {Context} from '../index';
-import {useParams} from 'react-router';
-import {useQuery} from '@apollo/client';
-import {GET_ONE_BOOK} from '../query/book';
+import {useNavigate, useParams} from 'react-router';
+import {useMutation, useQuery} from '@apollo/client';
+import {DELETE_BOOK, GET_ONE_BOOK} from '../query/book';
 import {Button, Container, Image} from 'react-bootstrap';
-import {SERVER_STATIC_URL} from '../utils/consts';
+import {BOOKS_PAGE, SERVER_STATIC_URL} from '../utils/consts';
 import LikeButton from '../components/book-page/LikeButton';
 import BookModal from '../modals/BookModal';
+import DeleteButton from '../components/book-page/DeleteButton';
 
 const BookPage = observer(() => {
     const {bookPageContext} = useContext(Context);
     const {id} = useParams();
     const [show, setShow] = useState(false);
+    const navigate = useNavigate();
+    const [deleteBook] = useMutation(DELETE_BOOK, {
+        onCompleted: data => console.log(data),
+        onError: error => alert(error.message)
+    });
     const {data, loading, error} = useQuery(GET_ONE_BOOK, {
         variables: {
             id
-        }
+        },
+        fetchPolicy: 'no-cache'
     });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleDelete = (deleteBook) => {
+        deleteBook({
+            variables: {
+                id
+            }
+        }).then(res => {
+            const likedBooks = JSON.parse(localStorage.getItem('likedBooks'));
+            if (likedBooks) {
+                localStorage
+                    .setItem('likedBooks', JSON.stringify(likedBooks.filter(book => book.id !== id)));
+            }
+            navigate(BOOKS_PAGE);
+        });
+    }
 
     useEffect(() => {
         if (data) {
@@ -60,6 +81,7 @@ const BookPage = observer(() => {
                                 Update
                             </Button>
                             <LikeButton id={id} className='mt-1'/>
+                            <DeleteButton action={() => handleDelete(deleteBook)}/>
                         </div>
                     </div>
                     <p style={{color: 'gray'}}>

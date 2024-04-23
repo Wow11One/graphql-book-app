@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Context} from '../index';
-import {useQuery} from '@apollo/client';
-import {GET_ALL_BOOKS} from '../query/book';
+import {useMutation, useQuery} from '@apollo/client';
+import {GET_ALL_BOOKS, UPDATE_BOOK} from '../query/book';
 import {observer} from 'mobx-react-lite';
 import {Button, Col, Container, Row} from 'react-bootstrap';
 import BookItem from '../components/book/BookItem';
@@ -26,7 +26,6 @@ const BooksList = observer(() => {
             limit: bookContext.limit
         }
     });
-
     useEffect(() => {
         if (data) {
             bookContext.books = data.getAllBooks.books

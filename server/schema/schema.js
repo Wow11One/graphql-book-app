@@ -60,7 +60,7 @@ const schema = `#graphql
     }
     
     type Query {
-        getAllBooks(genreIds: [ID], authorId: ID, search: String, page: Int, limit: Int): BookCount
+        getAllBooks(genreIds: [ID], authorId: ID, search: String, page: Int, limit: Int, ids: [ID]): BookCount
         getOneBook(id: ID): Book
       
         getAllAuthors(search: String): [Author]

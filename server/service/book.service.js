@@ -32,20 +32,22 @@ class BookService {
         return await this.getOne(book.id);
     }
 
-    async getAll({genreIds, authorId, search, limit, page}) {
+    async getAll({genreIds, authorId, search, limit, page, ids}) {
         let queryParams = {}
         let genreParams = {}
         let paginationParams = {}
         if (genreIds && genreIds.length !== 0) {
-            console.log(genreParams)
             genreParams = {...genreParams, where: {id: genreIds}}
         }
         if (authorId) {
             queryParams = {...queryParams, authorId}
         }
-        if (search || search.trim().length !== 0) {
+        if (search && search.trim().length !== 0) {
             search = '%' + search.trim() + '%'
             queryParams.title = {[Op.iLike]: search}
+        }
+        if (ids) {
+            queryParams.id = ids
         }
         if (limit) {
             let offset = limit * (page - 1)

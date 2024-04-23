@@ -6,6 +6,7 @@ import AuthorDropdown from '../components/shared/AuthorDropdown';
 import {observer} from 'mobx-react-lite';
 import {Context} from '../index';
 import GenreDropdown from '../components/book/GenreDropdown';
+import bookPage from '../pages/BookPage';
 
 const BookModal = observer(({show, onHide, actionName, id}) => {
     const {bookFormContext, bookContext, bookPageContext} = useContext(Context)
@@ -70,6 +71,7 @@ const BookModal = observer(({show, onHide, actionName, id}) => {
             bookPageContext.publicationHouse = res.data.updateBook.publicationHouse;
             bookPageContext.author = res.data.updateBook.author;
             bookPageContext.genre = res.data.updateBook.genre;
+            bookPageContext.image = res.data.updateBook.image;
         })
     }
 
