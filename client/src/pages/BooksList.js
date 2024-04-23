@@ -10,7 +10,7 @@ import {BOOKS_PAGE} from '../utils/consts';
 import BookModal from '../modals/BookModal';
 import SearchBar from '../components/shared/SearchBar';
 import AuthorFilterBar from '../components/book/AuthorFilterBar';
-import GenreCheckButtons from '../components/shared/GenreCheckButtons';
+import GenreCheckButtons from '../components/book/GenreCheckButtons';
 import Pages from '../components/shared/Pages';
 
 const BooksList = observer(() => {
@@ -68,10 +68,11 @@ const BooksList = observer(() => {
                 <Col md={9}>
                     <Row className='mt-4 d-flex justify-content-between'>
                         <SearchBar context={bookContext}/>
-                        <Button style={{width: 'auto'}}
-                                variant='primary'
-                                className='p-3 me-5'
-                                onClick={handleShow}
+                        <Button
+                            style={{width: 'auto'}}
+                            variant='primary'
+                            className='p-3 me-5'
+                            onClick={handleShow}
                         >
                             Create book
                         </Button>

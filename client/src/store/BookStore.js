@@ -4,7 +4,7 @@ export class BookStore {
     constructor() {
         this._books = []
         this._search = ''
-        this._limit = 5
+        this._limit = 6
         this._page = 1
         this._totalCount = 0
         this._selectedGenreIds = []

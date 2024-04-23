@@ -40,13 +40,39 @@ export const UPDATE_BOOK = gql`
        mutation updateBook($input: BookInput){
            updateBook(input: $input) {
                 id
+                title
+                genre {
+                    id
+                    name
+                }
+                author {
+                    id
+                    firstName
+                    lastName
+                }
+                image
+                publicationHouse
+                publicationYear
+                language
             }
        }
 `
 
 export const GET_ONE_BOOK = gql`query bookQuery($id: ID) {
     getOneBook(id: $id) {
-        id
-        title
+         title
+         publicationYear
+         language
+         publicationHouse
+         image
+         author {
+         id
+         firstName
+         lastName
+         }
+         genre {
+         id
+         name
+         }
     }
 }`

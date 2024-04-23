@@ -7,6 +7,7 @@ import {BookStore} from './store/BookStore';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import {AuthorStore} from './store/AuthorStore';
 import {BookFormStore} from './store/BookFormStore';
+import {BookPageStore} from './store/BookPageStore';
 
 const httpLink = createUploadLink({
     uri: 'http://localhost:5000/graphql',
@@ -36,7 +37,8 @@ root.render(
         <Context.Provider value={{
             bookContext: new BookStore(),
             authorContext: new AuthorStore(),
-            bookFormContext: new BookFormStore()
+            bookFormContext: new BookFormStore(),
+            bookPageContext: new BookPageStore()
         }}>
             <App/>
         </Context.Provider>

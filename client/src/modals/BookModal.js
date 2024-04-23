@@ -5,10 +5,10 @@ import {CREATE_BOOK, GET_ALL_BOOKS, GET_ONE_BOOK, UPDATE_BOOK} from '../query/bo
 import AuthorDropdown from '../components/shared/AuthorDropdown';
 import {observer} from 'mobx-react-lite';
 import {Context} from '../index';
-import GenreDropdown from '../components/shared/GenreDropdown';
+import GenreDropdown from '../components/book/GenreDropdown';
 
-const BookModal = observer(({show, onHide, actionName}) => {
-    const {bookFormContext, bookContext} = useContext(Context)
+const BookModal = observer(({show, onHide, actionName, id}) => {
+    const {bookFormContext, bookContext, bookPageContext} = useContext(Context)
     const [validated, setValidated] = useState(false)
 
     const [createBook] = useMutation(CREATE_BOOK, {
@@ -18,36 +18,22 @@ const BookModal = observer(({show, onHide, actionName}) => {
 
     const [updateBook] = useMutation(UPDATE_BOOK, {
         onCompleted: data => console.log(data),
-        onError: error => alert(error.message),
-        refetchQueries: [
-            {
-                query: GET_ALL_BOOKS,
-                variables: {
-                    genreIds: bookContext.genreIds,
-                    authorId: bookContext.author.id,
-                    search: bookContext.search,
-                    page: bookContext.page,
-                    limit: bookContext.limit
-                }
-            }
-        ]
-    })
-    const {data, loading, error} = useQuery(GET_ONE_BOOK, {
-        variables: {id: bookFormContext.id}
-    })
+        onError: error => alert(error.message)
+    });
 
     useEffect(() => {
-        if (actionName === 'Update' && data.getOneBook) {
-            bookFormContext.title = data.getOneBook.title;
-            bookFormContext.language = data.getOneBook.language;
-            bookFormContext.publicationYear = data.getOneBook.publicationYear;
-            bookFormContext.publicationHouse = data.getOneBook.publicationHouse;
-            bookFormContext.author = data.getOneBook.author;
-            bookFormContext.genre = data.getOneBook.genre;
+        if (actionName === 'Update') {
+            bookFormContext.id = id
+            bookFormContext.title = bookPageContext.title;
+            bookFormContext.language = bookPageContext.language;
+            bookFormContext.publicationYear = bookPageContext.publicationYear;
+            bookFormContext.publicationHouse = bookPageContext.publicationHouse;
+            bookFormContext.author = bookPageContext.author;
+            bookFormContext.genre = bookPageContext.genre;
         } else {
             bookFormContext.init()
         }
-    }, [show, loading])
+    }, [show])
     const create = () => {
         createBook({
             variables: {
@@ -73,10 +59,18 @@ const BookModal = observer(({show, onHide, actionName}) => {
                     publicationYear: bookFormContext.publicationYear,
                     language: bookFormContext.language,
                     author: bookFormContext.author.id,
-                    genre: bookFormContext.genre.id
+                    genre: bookFormContext.genre.id,
+                    id: bookFormContext.id
                 }
             }
-        }).then(res => console.log(res))
+        }).then(res => {
+            bookPageContext.title = res.data.updateBook.title;
+            bookPageContext.language = res.data.updateBook.language;
+            bookPageContext.publicationYear = res.data.updateBook.publicationYear;
+            bookPageContext.publicationHouse = res.data.updateBook.publicationHouse;
+            bookPageContext.author = res.data.updateBook.author;
+            bookPageContext.genre = res.data.updateBook.genre;
+        })
     }
 
     const handleSubmit = (event) => {

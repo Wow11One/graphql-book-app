@@ -1,5 +1,6 @@
 import React from 'react';
 import {Container, Nav, Navbar} from 'react-bootstrap'
+import {Link} from 'react-router-dom';
 
 const NavBar = () => {
     return (
@@ -7,8 +8,8 @@ const NavBar = () => {
             <Container>
                 <Navbar.Brand href='/books'>Books</Navbar.Brand>
                 <Nav className='me-auto'>
-                    <Nav.Link href='/books'>Books</Nav.Link>
-                    <Nav.Link href='/authors'>Authors</Nav.Link>
+                    <Link to='/books' className='nav-link'>Books</Link>
+                    <Link to='/authors' className='nav-link'>Authors</Link>
                 </Nav>
             </Container>
         </Navbar>
