@@ -9,6 +9,9 @@ import {useNavigate} from 'react-router';
 import {BOOKS_PAGE} from '../utils/consts';
 import BookModal from '../modals/BookModal';
 import SearchBar from '../components/shared/SearchBar';
+import AuthorFilterBar from '../components/book/AuthorFilterBar';
+import GenreCheckButtons from '../components/shared/GenreCheckButtons';
+import Pages from '../components/shared/Pages';
 
 const BooksList = observer(() => {
     const {bookContext} = useContext(Context);
@@ -16,31 +19,39 @@ const BooksList = observer(() => {
     const [show, setShow] = useState(false);
     const {data, loading, error, refetch} = useQuery(GET_ALL_BOOKS, {
         variables: {
-            genreIds: bookContext.genreIds,
+            genreIds: bookContext.selectedGenreIds,
             authorId: bookContext.author.id,
-            search: bookContext.search
+            search: bookContext.search,
+            page: bookContext.page,
+            limit: bookContext.limit
         }
     });
 
     useEffect(() => {
         if (data) {
             bookContext.books = data.getAllBooks.books
+            bookContext.totalCount = data.getAllBooks.count
         }
     }, [data])
 
     useEffect(() => {
         refetch({
             variables: {
-                genreIds: bookContext.genreIds,
+                genreIds: bookContext.selectedGenreIds,
                 authorId: bookContext.author.id,
-                search: bookContext.search
-            }
-        }).then(data => {
-            if (data && data.loading === false) {
-                bookContext.books = data.data.getAllBooks.books
-            }
+                search: bookContext.search,
+                page: bookContext.page,
+                limit: bookContext.limit
+            },
+            fetchPolicy: 'network-only'
         })
-    }, [bookContext.search, bookContext.genreIds, bookContext.author])
+    }, [
+        bookContext.search,
+        bookContext.selectedGenreIds,
+        bookContext.author,
+        bookContext.page,
+        bookContext.totalCount
+    ]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -48,7 +59,12 @@ const BooksList = observer(() => {
     return (
         <Container>
             <Row className='mt-2 mb-5'>
-                <Col md={3}></Col>
+                <Col md={3}>
+                    <Row className='mt-4'>
+                        <AuthorFilterBar/>
+                        <GenreCheckButtons/>
+                    </Row>
+                </Col>
                 <Col md={9}>
                     <Row className='mt-4 d-flex justify-content-between'>
                         <SearchBar context={bookContext}/>
@@ -76,6 +92,7 @@ const BooksList = observer(() => {
                     </Row>
                 </Col>
             </Row>
+            <Pages context={bookContext}/>
             <BookModal show={show} onHide={handleClose} actionName={'Create'}/>
         </Container>
     );

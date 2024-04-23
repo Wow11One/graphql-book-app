@@ -32,10 +32,13 @@ class BookService {
         return await this.getOne(book.id);
     }
 
-    async getAll({genreIds, authorId, search}) {
+    async getAll({genreIds, authorId, search, limit, page}) {
         let queryParams = {}
-        if (genreIds) {
-            queryParams = {...queryParams, genreIds}
+        let genreParams = {}
+        let paginationParams = {}
+        if (genreIds && genreIds.length !== 0) {
+            console.log(genreParams)
+            genreParams = {...genreParams, where: {id: genreIds}}
         }
         if (authorId) {
             queryParams = {...queryParams, authorId}
@@ -44,11 +47,15 @@ class BookService {
             search = '%' + search.trim() + '%'
             queryParams.title = {[Op.iLike]: search}
         }
-        console.log(search)
+        if (limit) {
+            let offset = limit * (page - 1)
+            paginationParams = {offset, limit}
+        }
 
         const books = await Book.findAndCountAll({
+            ...paginationParams,
             where: queryParams,
-            include: [{model: Author, as: 'author'}, {model: Genre, as: 'genre'}],
+            include: [{model: Author, as: 'author'}, {model: Genre, as: 'genre', ...genreParams}],
             order: [['createdAt', 'asc']]
         })
 

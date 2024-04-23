@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Form, Modal} from 'react-bootstrap';
 import {useMutation, useQuery} from '@apollo/client';
-import {CREATE_BOOK, GET_ALL_BOOKS, GET_ONE_BOOK} from '../query/book';
+import {CREATE_BOOK, GET_ALL_BOOKS, GET_ONE_BOOK, UPDATE_BOOK} from '../query/book';
 import AuthorDropdown from '../components/shared/AuthorDropdown';
 import {observer} from 'mobx-react-lite';
 import {Context} from '../index';
@@ -12,21 +12,11 @@ const BookModal = observer(({show, onHide, actionName}) => {
     const [validated, setValidated] = useState(false)
 
     const [createBook] = useMutation(CREATE_BOOK, {
-        onCompleted: data => console.log(data),
+        onCompleted: data => bookContext.totalCount = bookContext.totalCount + 1,
         onError: error => alert(error.message),
-        refetchQueries: [
-            {
-                query: GET_ALL_BOOKS,
-                variables: {
-                    genreIds: bookContext.genreIds,
-                    authorId: bookContext.author.id,
-                    search: bookContext.search
-                }
-            }
-        ]
     })
 
-    const [updateBook] = useMutation(CREATE_BOOK, {
+    const [updateBook] = useMutation(UPDATE_BOOK, {
         onCompleted: data => console.log(data),
         onError: error => alert(error.message),
         refetchQueries: [
@@ -35,7 +25,9 @@ const BookModal = observer(({show, onHide, actionName}) => {
                 variables: {
                     genreIds: bookContext.genreIds,
                     authorId: bookContext.author.id,
-                    search: bookContext.search
+                    search: bookContext.search,
+                    page: bookContext.page,
+                    limit: bookContext.limit
                 }
             }
         ]
@@ -84,7 +76,7 @@ const BookModal = observer(({show, onHide, actionName}) => {
                     genre: bookFormContext.genre.id
                 }
             }
-        }).then(r => console.log(r))
+        }).then(res => console.log(res))
     }
 
     const handleSubmit = (event) => {
@@ -145,7 +137,7 @@ const BookModal = observer(({show, onHide, actionName}) => {
                             min={1800}
                             max={2025}
                             value={bookFormContext.publicationYear}
-                            onChange={e => bookFormContext.publicationYear = e.target.value}
+                            onChange={e => bookFormContext.publicationYear = Number(e.target.value)}
                             required
                         />
                         <Form.Control.Feedback type='invalid'>

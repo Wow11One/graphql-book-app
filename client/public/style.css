@@ -12,3 +12,7 @@ img {
 .card-img-top, .card-body {
     cursor: pointer;
 }
+
+p {
+    margin-bottom: 0 !important;
+}

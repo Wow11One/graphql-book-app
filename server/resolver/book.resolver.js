@@ -2,8 +2,8 @@ const bookService = require('../service/book.service')
 
 const bookResolver = {
     Query: {
-        getAllBooks: async (parent, {genreId, authorId, search}) => {
-            return await bookService.getAll({genreId, authorId, search})
+        getAllBooks: async (parent, args) => {
+            return await bookService.getAll(args)
         },
         getOneBook: async (parent, {id}) => {
             return await bookService.getOne(id)

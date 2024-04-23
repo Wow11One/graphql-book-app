@@ -5,7 +5,7 @@ import {useQuery} from '@apollo/client';
 import {Context} from '../../index';
 import {observer} from 'mobx-react-lite';
 
-const AuthorDropdown = observer(({context}) => {
+const AuthorDropdown = observer(({context, hasAny}) => {
     const {authorContext} = useContext(Context)
     const {data, loading, error} = useQuery(GET_ALL_AUTHORS);
     useEffect(() => {
@@ -20,18 +20,30 @@ const AuthorDropdown = observer(({context}) => {
                 {context.author.id
                     ? context.author.firstName + ' '
                     + context.author.lastName
-                    : 'chose author'
+                    : (hasAny ? 'Any author' : 'Choose author')
                 }
             </Dropdown.Toggle>
             <Dropdown.Menu>
+                {hasAny
+                    ? <Dropdown.Item
+                        onClick={() => context.author = {}}
+                        key={-1}
+                    >
+                        {'Any author'}
+                    </Dropdown.Item>
+                    : <></>}
                 {authorContext.authors.map(author =>
                     <Dropdown.Item
-                        onClick={() =>
+                        onClick={() => {
+                            if (context.page) {
+                                context.page = 1
+                            }
                             context.author = {
                                 id: author.id,
                                 firstName: author.firstName,
                                 lastName: author.lastName
                             }
+                        }
                         }
                         key={author.id}
                     >

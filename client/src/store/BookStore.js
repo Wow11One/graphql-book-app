@@ -4,10 +4,10 @@ export class BookStore {
     constructor() {
         this._books = []
         this._search = ''
-        this._limit = 9
+        this._limit = 5
         this._page = 1
         this._totalCount = 0
-        this._genreIds = []
+        this._selectedGenreIds = []
         this._author = {}
         this._genres = []
         makeAutoObservable(this);
@@ -33,8 +33,8 @@ export class BookStore {
         return this._totalCount;
     }
 
-    get genreIds() {
-        return this._genreIds;
+    get selectedGenreIds() {
+        return this._selectedGenreIds;
     }
 
     get author() {
@@ -61,8 +61,8 @@ export class BookStore {
         this._totalCount = value;
     }
 
-    set genreIds(value) {
-        this._genreIds = value;
+    set selectedGenreIds(value) {
+        this._selectedGenreIds = value;
     }
 
     set author(value) {

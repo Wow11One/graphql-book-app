@@ -5,7 +5,7 @@ const NavBar = () => {
     return (
         <Navbar bg='primary' data-bs-theme='dark'>
             <Container>
-                <Navbar.Brand href='/books'>Navbar</Navbar.Brand>
+                <Navbar.Brand href='/books'>Books</Navbar.Brand>
                 <Nav className='me-auto'>
                     <Nav.Link href='/books'>Books</Nav.Link>
                     <Nav.Link href='/authors'>Authors</Nav.Link>
